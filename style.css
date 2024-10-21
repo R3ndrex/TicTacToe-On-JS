@@ -60,3 +60,6 @@ button[disabled] {
     filter: brightness(92%);
     color: #000000;
 }
+p {
+    height: 2rem;
+}
