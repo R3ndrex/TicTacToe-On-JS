@@ -33,13 +33,9 @@ const ScreenController = (function () {
                     symbol
                 )
             ) {
-                console.log("1" + player1.getSymbol()); //1x
-                console.log("2" + player2.getSymbol()); //2o
                 playingPlayer = player1;
                 events.emit("Player Won", symbol);
             } else if (CheckTie(gameboard.GetBoard())) {
-                console.log("1" + player1.getSymbol()); //1x
-                console.log("2" + player2.getSymbol()); //2o
                 playingPlayer = player1;
                 events.emit("Tie");
             } else {
