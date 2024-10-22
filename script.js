@@ -34,7 +34,6 @@ const ScreenController = (function () {
         function play(place) {
             playingPlayer.play(place);
             CheckWin(playingPlayer.getSymbol());
-            // change player
         }
 
         function CheckWin(symbol) {
@@ -69,18 +68,18 @@ const ScreenController = (function () {
 
     const startButton = document.querySelector(".start");
     startButton.addEventListener("click", () => {
-        const name1 = document.querySelector(
-            "input[name='player1_name']"
-        ).value;
-        const name2 = document.querySelector(
-            "input[name='player2_name']"
-        ).value;
-        const symbol1 = document.querySelector(
-            "input[name='player1_symbol']"
-        ).value;
-        const symbol2 = document.querySelector(
-            "input[name='player2_symbol']"
-        ).value;
+        const name1 = document
+            .querySelector("input[name='player1_name']")
+            .value.trim();
+        const name2 = document
+            .querySelector("input[name='player2_name']")
+            .value.trim();
+        const symbol1 = document
+            .querySelector("input[name='player1_symbol']")
+            .value.trim();
+        const symbol2 = document
+            .querySelector("input[name='player2_symbol']")
+            .value.trim();
         updateScreen();
         InputHandlerNames(name1, name2, symbol1, symbol2);
     });
@@ -116,6 +115,10 @@ const ScreenController = (function () {
     }
 
     function InputHandlerNames(name1, name2, symbol1, symbol2) {
+        symbol1 = symbol1 ? symbol1 : "x";
+        symbol2 = symbol2 ? symbol2 : "o";
+        name1 = name1 ? name1 : "First Player";
+        name2 = name2 ? name2 : "Second Player";
         GameController.setPlayers(name1, name2, symbol1, symbol2);
     }
 
