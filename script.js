@@ -65,9 +65,9 @@ const ScreenController = (function () {
         }
         return { play, setPlayers };
     })();
-
-    const startButton = document.querySelector(".start");
-    startButton.addEventListener("click", () => {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
         const name1 = document
             .querySelector("input[name='player1_name']")
             .value.trim();
