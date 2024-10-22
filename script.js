@@ -15,8 +15,20 @@ const ScreenController = (function () {
             return { play, getSymbol };
         };
 
-        const player1 = playerCreate("First Player", "x");
-        const player2 = playerCreate("Second Player", "o");
+        let player1 = playerCreate("First Player", "x");
+        let player2 = playerCreate("Second Player", "o");
+
+        function setPlayers(
+            name1 = "First Player",
+            name2 = "Second Player",
+            symbol1 = "x",
+            symbol2 = "o"
+        ) {
+            player1 = playerCreate(name1, symbol1);
+            player2 = playerCreate(name2, symbol2);
+            playingPlayer = player1;
+        }
+
         let playingPlayer = player1;
 
         function play(place) {
@@ -52,15 +64,25 @@ const ScreenController = (function () {
                 pattern.every((index) => board[index].getData() === symbol)
             );
         }
-        return { play, playerCreate };
+        return { play, setPlayers };
     })();
 
     const startButton = document.querySelector(".start");
     startButton.addEventListener("click", () => {
-        const name1 = document.querySelector("input[name='player1']").value;
-        const name2 = document.querySelector("input[name='player2']").value;
+        const name1 = document.querySelector(
+            "input[name='player1_name']"
+        ).value;
+        const name2 = document.querySelector(
+            "input[name='player2_name']"
+        ).value;
+        const symbol1 = document.querySelector(
+            "input[name='player1_symbol']"
+        ).value;
+        const symbol2 = document.querySelector(
+            "input[name='player2_symbol']"
+        ).value;
         updateScreen();
-        InputHandlerNames(name1, name2);
+        InputHandlerNames(name1, name2, symbol1, symbol2);
     });
 
     function updateScreen() {
@@ -93,13 +115,8 @@ const ScreenController = (function () {
         }
     }
 
-    function InputHandlerNames(name1, name2) {
-        if (name1.trim() !== "") {
-            GameController.player1 = GameController.playerCreate(name1, "x");
-        }
-        if (name1.trim() !== "") {
-            GameController.player2 = GameController.playerCreate(name2, "o");
-        }
+    function InputHandlerNames(name1, name2, symbol1, symbol2) {
+        GameController.setPlayers(name1, name2, symbol1, symbol2);
     }
 
     events.on("Winner", (playerName) => {
