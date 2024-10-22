@@ -17,7 +17,8 @@ body {
         sans-serif;
 }
 
-h1 {
+h1,
+h2 {
     margin: 0;
 }
 form {
@@ -32,7 +33,6 @@ form {
         font-size: 1rem;
     }
     > h2 {
-        margin: 0;
         color: gray;
         text-align: center;
         grid-column: 1/-1;
