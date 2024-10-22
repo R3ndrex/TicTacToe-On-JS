@@ -32,9 +32,6 @@ const gameboard = (function () {
     events.on("Tie", initBoard);
 
     function setBoard(index, symbol) {
-        if (index >= BOARD_LENGTH) {
-            throw RangeError("index is out of bounds");
-        }
         board[index].changeData(symbol);
     }
 
