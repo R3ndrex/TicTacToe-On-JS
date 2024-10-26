@@ -1,101 +1,131 @@
-/*global gameboard*/
-/*global events*/
-const ScreenController = (function () {
-    const GameController = (function () {
-        const playerCreate = function (name, symbol) {
-            function play(place) {
-                gameboard.setBoard(place, symbol);
-            }
-            function getSymbol() {
-                return symbol;
-            }
-            events.on("Player Won", function (winnerSymbol) {
-                if (symbol === winnerSymbol) events.emit("Winner", name);
-            });
-            return { play, getSymbol };
-        };
+class Player {
+    #symbol = "";
+    #name;
+    #gameboard;
+    constructor(name, symbol, gameboard) {
+        this.#name = name;
+        this.#symbol = symbol;
+        this.#gameboard = gameboard;
+        events.on("Player Won", (winnerSymbol) => {
+            if (this.symbol === winnerSymbol) events.emit("Winner", this.#name);
+        });
+    }
+    play(place) {
+        this.#gameboard.setBoard(place, this.symbol);
+    }
+    get symbol() {
+        return this.#symbol;
+    }
+}
 
-        let player1 = playerCreate("First Player", "x");
-        let player2 = playerCreate("Second Player", "o");
-
-        function setPlayers(
-            name1 = "First Player",
-            name2 = "Second Player",
-            symbol1 = "x",
-            symbol2 = "o"
-        ) {
-            player1 = playerCreate(name1, symbol1);
-            player2 = playerCreate(name2, symbol2);
-            playingPlayer = player1;
-        }
-
-        let playingPlayer = player1;
-
-        function play(place) {
-            playingPlayer.play(place);
-            CheckWin(playingPlayer.getSymbol());
-        }
-
-        function CheckWin(symbol) {
-            if (
-                CheckWinPatterns(
-                    gameboard.GetBoard(),
-                    gameboard.getPatterns(),
-                    symbol
-                )
-            ) {
-                playingPlayer = player1;
-                events.emit("Player Won", symbol);
-            } else if (CheckTie(gameboard.GetBoard())) {
-                playingPlayer = player1;
-                events.emit("Tie");
-            } else {
-                playingPlayer = playingPlayer === player1 ? player2 : player1;
-            }
-        }
-
-        function CheckTie(board) {
-            return board.every((element) => element.getData() !== "");
-        }
-
-        function CheckWinPatterns(board, pattern, symbol) {
-            return pattern.some((pattern) =>
-                pattern.every((index) => board[index].getData() === symbol)
-            );
-        }
-        return { play, setPlayers };
-    })();
-    const form = document.querySelector("form");
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const name1 = document
-            .querySelector("input[name='player1_name']")
-            .value.trim();
-        const name2 = document
-            .querySelector("input[name='player2_name']")
-            .value.trim();
-        const symbol1 = document
-            .querySelector("input[name='player1_symbol']")
-            .value.trim();
-        const symbol2 = document
-            .querySelector("input[name='player2_symbol']")
-            .value.trim();
-        updateScreen();
-        InputHandlerNames(name1, name2, symbol1, symbol2);
-    });
-
-    function updateScreen() {
-        const board = document.querySelector(".board");
-        board.innerHTML = "";
-        renderBoard(board);
-        ClickHandlerBoard();
+class GameController {
+    #player1; //new Player("First Player", "x");
+    #player2; //new Player("Second Player", "o");
+    #playingPlayer;
+    constructor(player1, player2, gameboard) {
+        this.#player1 = player1;
+        this.#player2 = player2;
+        this.gameboard = gameboard;
     }
 
-    function renderBoard(board) {
-        const gboard = gameboard.GetBoard();
+    setPlayers(
+        name1 = "First Player",
+        name2 = "Second Player",
+        symbol1 = "x",
+        symbol2 = "o"
+    ) {
+        this.#player1 = new Player(name1, symbol1, this.gameboard);
+        this.#player2 = new Player(name2, symbol2, this.gameboard);
+        this.#playingPlayer = this.#player1;
+    }
+
+    play(place) {
+        this.#playingPlayer.play(place);
+        this.#CheckWin(this.#playingPlayer.symbol);
+    }
+
+    #CheckWin(symbol) {
+        if (
+            this.#CheckWinPatterns(
+                this.gameboard.board,
+                this.gameboard.pattern,
+                symbol
+            )
+        ) {
+            this.#playingPlayer = this.#player1;
+            events.emit("Player Won", symbol);
+        } else if (this.#CheckTie(this.gameboard.board)) {
+            this.#playingPlayer = this.#player1;
+            events.emit("Tie");
+        } else {
+            this.#changePlayer();
+        }
+    }
+
+    #changePlayer() {
+        this.#playingPlayer =
+            this.#playingPlayer === this.#player1
+                ? this.#player2
+                : this.#player1; // change player
+    }
+
+    #CheckTie(board) {
+        return board.every((element) => element.symbol !== ""); // if all cells on board are not empty
+    }
+
+    #CheckWinPatterns(board, pattern, symbol) {
+        return pattern.some((pattern) =>
+            pattern.every((index) => board[index].symbol === symbol)
+        );
+    }
+}
+
+class ScreenController {
+    constructor(form, GameController, gameboard) {
+        this.gameController = GameController;
+        this.form = form;
+        this.gameboard = gameboard;
+        this.board = document.querySelector(".board");
+        this.form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name1 = document
+                .querySelector("input[name='player1_name']")
+                .value.trim();
+            const name2 = document
+                .querySelector("input[name='player2_name']")
+                .value.trim();
+            const symbol1 = document
+                .querySelector("input[name='player1_symbol']")
+                .value.trim();
+            const symbol2 = document
+                .querySelector("input[name='player2_symbol']")
+                .value.trim();
+            this.updateScreen(this.board);
+            this.inputHandlerNames(name1, name2, symbol1, symbol2);
+        });
+
+        events.on("Winner", (playerName) => {
+            const p = document.querySelector("p");
+            p.textContent = `${playerName} has Won!`;
+        });
+        events.on("Tie", () => {
+            const p = document.querySelector("p");
+            p.textContent = `Its a Tie!`;
+        });
+    }
+
+    updateScreen(board) {
+        board.innerHTML = "";
+        this.renderBoard(board);
+        this.clickHandlerBoard();
+    }
+
+    renderBoard(board) {
+        const gboard = gameboard.board;
         for (let i = 0; i < gboard.length; i++) {
             const cell = document.createElement("button");
-            cell.textContent = gboard[i].getData();
+            cell.setAttribute("type", "button");
+            cell.textContent = gboard[i].symbol;
             if (cell.textContent !== "") {
                 cell.disabled = true;
             }
@@ -104,32 +134,40 @@ const ScreenController = (function () {
         }
     }
 
-    function ClickHandlerBoard() {
+    clickHandlerBoard() {
         const cells = document.querySelectorAll(".board>button");
         for (let i = 0; i < cells.length; i++) {
             cells[i].addEventListener("click", () => {
-                GameController.play(i);
-                updateScreen();
+                this.gameController.play(i);
+                this.updateScreen(this.board);
             });
         }
     }
 
-    function InputHandlerNames(name1, name2, symbol1, symbol2) {
-        symbol1 = symbol1 ? symbol1 : "x";
-        symbol2 = symbol2 ? symbol2 : "o";
-        name1 = name1 ? name1 : "First Player";
-        name2 = name2 ? name2 : "Second Player";
-        GameController.setPlayers(name1, name2, symbol1, symbol2);
+    inputHandlerNames(name1, name2, symbol1, symbol2) {
+        symbol1 = symbol1[0];
+        symbol2 = symbol2[0];
+        name1 = name1 || "First Player";
+        symbol1 = symbol1 || "x";
+        if (name2 === "" || name2 === name1) {
+            name2 = "Second Player";
+        }
+        if (name2 === name1) {
+            name2 = "Player 2";
+        }
+        if (symbol2 === "" || symbol2 === symbol1) {
+            symbol2 = "o";
+        }
+        if (symbol2 === symbol1) {
+            symbol2 = "?";
+        }
+
+        this.gameController.setPlayers(name1, name2, symbol1, symbol2);
     }
-
-    events.on("Winner", (playerName) => {
-        const p = document.querySelector("p");
-        p.textContent = `${playerName} has Won!`;
-    });
-    events.on("Tie", () => {
-        const p = document.querySelector("p");
-        p.textContent = `Its a Tie!`;
-    });
-
-    return { updateScreen, ClickHandlerBoard };
-})();
+}
+const gameboard = new Gameboard();
+const player1 = new Player("First Player", "x", gameboard);
+const player2 = new Player("Second Player", "o", gameboard);
+const gamecontroller = new GameController(player1, player2, gameboard);
+const form = document.querySelector("form");
+const screenController = new ScreenController(form, gamecontroller, gameboard);
