@@ -59,7 +59,7 @@ button {
     background-color: #ffffff;
 }
 
-.board button:hover {
+button:hover {
     filter: brightness(97%);
 }
 
