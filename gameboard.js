@@ -1,16 +1,14 @@
-/*global events*/
-/*global gameboard*/
-const gameboard = (function () {
-    const cellCreate = function () {
-        let value = "";
-        const getData = () => value;
-        const changeData = (symbol) => (value = symbol);
-        return { changeData, getData };
-    };
+class Cell {
+    symbol;
+    constructor(symbol = "") {
+        this.symbol = symbol;
+    }
+}
 
-    const BOARD_LENGTH = 9;
-    let board = [];
-    const winPatterns = [
+class Gameboard {
+    #BOARD_LENGTH = 9;
+    #board = [];
+    #winPatterns = [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
@@ -20,21 +18,28 @@ const gameboard = (function () {
         [0, 4, 8],
         [2, 4, 6],
     ];
-    function initBoard() {
-        board = [];
-        for (let i = 0; i < BOARD_LENGTH; i++) {
-            board.push(cellCreate());
+    constructor() {
+        events.on("Winner", () => this.#initBoard());
+        events.on("Tie", () => this.#initBoard());
+        this.#initBoard();
+    }
+
+    #initBoard() {
+        this.#board = [];
+        for (let i = 0; i < this.#BOARD_LENGTH; i++) {
+            this.#board.push(new Cell());
         }
     }
-    const GetBoard = () => board;
-    const getPatterns = () => winPatterns;
-    events.on("Winner", initBoard);
-    events.on("Tie", initBoard);
 
-    function setBoard(index, symbol) {
-        board[index].changeData(symbol);
+    setBoard(index, symbol) {
+        this.#board[index] = new Cell(symbol);
     }
 
-    initBoard();
-    return { setBoard, GetBoard, getPatterns };
-})();
+    get board() {
+        return this.#board;
+    }
+
+    get pattern() {
+        return this.#winPatterns;
+    }
+}
