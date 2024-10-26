@@ -21,6 +21,7 @@ h1,
 h2 {
     margin: 0;
 }
+
 form {
     display: grid;
     gap: 1rem;
@@ -44,6 +45,7 @@ form {
     height: min(500px, 90%);
     display: grid;
     grid-template-columns: repeat(3, minmax(100px, 1fr));
+    grid-template-rows: repeat(3, minmax(100px, 1fr));
     > button {
         font-size: 3rem;
         font-weight: 100;
@@ -58,12 +60,12 @@ button {
 }
 
 .board button:hover {
-    filter: brightness(95%);
+    filter: brightness(97%);
 }
 
 button:disabled,
 button[disabled] {
-    filter: brightness(92%);
+    filter: brightness(96%);
     color: #000000;
 }
 p {
