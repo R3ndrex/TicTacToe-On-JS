@@ -10,8 +10,8 @@ class Player {
             if (this.symbol === winnerSymbol) events.emit("Winner", this.#name);
         });
     }
-    play(place) {
-        this.#gameboard.setBoard(place, this.symbol);
+    play(cellIndex) {
+        this.#gameboard.setBoard(cellIndex, this.symbol);
     }
     get symbol() {
         return this.#symbol;
@@ -39,8 +39,8 @@ class GameController {
         this.#playingPlayer = this.#player1;
     }
 
-    play(place) {
-        this.#playingPlayer.play(place);
+    play(cellIndex) {
+        this.#playingPlayer.play(cellIndex);
         this.#CheckWin(this.#playingPlayer.symbol);
     }
 
@@ -166,8 +166,13 @@ class ScreenController {
     }
 }
 const gameboard = new Gameboard();
-const player1 = new Player("First Player", "x", gameboard);
-const player2 = new Player("Second Player", "o", gameboard);
-const gamecontroller = new GameController(player1, player2, gameboard);
-const form = document.querySelector("form");
-const screenController = new ScreenController(form, gamecontroller, gameboard);
+const gamecontroller = new GameController(
+    new Player("First Player", "x", gameboard),
+    new Player("Second Player", "o", gameboard),
+    gameboard
+);
+const screenController = new ScreenController(
+    document.querySelector("form"),
+    gamecontroller,
+    gameboard
+);
