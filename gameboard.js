@@ -8,7 +8,7 @@ class Cell {
 class Gameboard {
     #BOARD_LENGTH = 9;
     #board = [];
-    #winPatterns = [
+    #WIN_PATTERNS = [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
@@ -40,6 +40,6 @@ class Gameboard {
     }
 
     get pattern() {
-        return this.#winPatterns;
+        return this.#WIN_PATTERNS;
     }
 }
