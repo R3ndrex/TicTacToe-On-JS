@@ -50,6 +50,7 @@ form {
         font-size: 3rem;
         font-weight: 100;
         font-family: inherit;
+        color: #000000;
     }
 }
 
@@ -66,7 +67,6 @@ button:hover {
 button:disabled,
 button[disabled] {
     filter: brightness(96%);
-    color: #000000;
 }
 p {
     height: 2rem;
