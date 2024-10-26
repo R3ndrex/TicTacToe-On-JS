@@ -100,8 +100,8 @@ class ScreenController {
             const symbol2 = document
                 .querySelector("input[name='player2_symbol']")
                 .value.trim();
-            this.updateScreen(this.board);
-            this.inputHandlerNames(name1, name2, symbol1, symbol2);
+            this.#updateScreen(this.board);
+            this.#inputHandlerNames(name1, name2, symbol1, symbol2);
         });
 
         events.on("Winner", (playerName) => {
@@ -114,13 +114,13 @@ class ScreenController {
         });
     }
 
-    updateScreen(board) {
+    #updateScreen(board) {
         board.innerHTML = "";
-        this.renderBoard(board);
-        this.clickHandlerBoard();
+        this.#renderBoard(board);
+        this.#clickHandlerBoard();
     }
 
-    renderBoard(board) {
+    #renderBoard(board) {
         const gboard = gameboard.board;
         for (let i = 0; i < gboard.length; i++) {
             const cell = document.createElement("button");
@@ -134,17 +134,17 @@ class ScreenController {
         }
     }
 
-    clickHandlerBoard() {
+    #clickHandlerBoard() {
         const cells = document.querySelectorAll(".board>button");
         for (let i = 0; i < cells.length; i++) {
             cells[i].addEventListener("click", () => {
                 this.gameController.play(i);
-                this.updateScreen(this.board);
+                this.#updateScreen(this.board);
             });
         }
     }
 
-    inputHandlerNames(name1, name2, symbol1, symbol2) {
+    #inputHandlerNames(name1, name2, symbol1, symbol2) {
         symbol1 = symbol1[0];
         symbol2 = symbol2[0];
         name1 = name1 || "First Player";
