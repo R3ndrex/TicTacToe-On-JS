@@ -46,7 +46,7 @@ class GameController {
 
     #CheckWin(symbol) {
         if (
-            this.#CheckWinPatterns(
+            GameController.#CheckWinPatterns(
                 this.gameboard.board,
                 this.gameboard.pattern,
                 symbol
@@ -73,7 +73,7 @@ class GameController {
         return board.every((element) => element.symbol !== ""); // if all cells on board are not empty
     }
 
-    #CheckWinPatterns(board, pattern, symbol) {
+    static #CheckWinPatterns(board, pattern, symbol) {
         return pattern.some((pattern) =>
             pattern.every((index) => board[index].symbol === symbol)
         );
