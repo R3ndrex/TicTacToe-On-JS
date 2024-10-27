@@ -54,7 +54,7 @@ class GameController {
         ) {
             this.#playingPlayer = this.#player1;
             events.emit("Player Won", symbol);
-        } else if (this.#CheckTie(this.gameboard.board)) {
+        } else if (GameController.#CheckTie(this.gameboard.board)) {
             this.#playingPlayer = this.#player1;
             events.emit("Tie");
         } else {
@@ -69,7 +69,7 @@ class GameController {
                 : this.#player1; // change player
     }
 
-    #CheckTie(board) {
+    static #CheckTie(board) {
         return board.every((element) => element.symbol !== ""); // if all cells on board are not empty
     }
 
