@@ -34,6 +34,7 @@ class GameController {
         symbol1 = "x",
         symbol2 = "o"
     ) {
+        events.emit("Reset");
         this.#player1 = new Player(name1, symbol1, this.gameboard);
         this.#player2 = new Player(name2, symbol2, this.gameboard);
         this.#playingPlayer = this.#player1;
@@ -86,7 +87,21 @@ class ScreenController {
         this.form = form;
         this.gameboard = gameboard;
         this.board = document.querySelector(".board");
-        this.form.addEventListener("submit", (e) => {
+        this.#formSubmitHandler(this.form);
+
+        events.on("Winner", (playerName) => {
+            const p = document.querySelector("p");
+            p.textContent = `${playerName} has Won!`;
+        });
+
+        events.on("Tie", () => {
+            const p = document.querySelector("p");
+            p.textContent = `Its a Tie!`;
+        });
+    }
+
+    #formSubmitHandler(form) {
+        form.addEventListener("submit", (e) => {
             e.preventDefault();
             const name1 = document
                 .querySelector("input[name='player1_name']")
@@ -100,24 +115,15 @@ class ScreenController {
             const symbol2 = document
                 .querySelector("input[name='player2_symbol']")
                 .value.trim();
-            this.#updateScreen(this.board);
             this.#inputHandlerNames(name1, name2, symbol1, symbol2);
-        });
-
-        events.on("Winner", (playerName) => {
-            const p = document.querySelector("p");
-            p.textContent = `${playerName} has Won!`;
-        });
-        events.on("Tie", () => {
-            const p = document.querySelector("p");
-            p.textContent = `Its a Tie!`;
+            this.#updateScreen(this.board);
         });
     }
 
     #updateScreen(board) {
         board.innerHTML = "";
-        this.#renderBoard(board);
-        this.#clickHandlerBoard();
+        this.#renderBoard(board); // reset board and render based on gameboard
+        this.#clickHandlerBoard(); // buttons click events
     }
 
     #renderBoard(board) {

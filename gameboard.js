@@ -21,6 +21,7 @@ class Gameboard {
     constructor() {
         events.on("Winner", () => this.#initBoard());
         events.on("Tie", () => this.#initBoard());
+        events.on("Reset", () => this.#initBoard());
         this.#initBoard();
     }
 
