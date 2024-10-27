@@ -1,6 +1,6 @@
 # TicTacToe-On-JS
 
-Basic local Tic Tac Toe game on JavaScript for two players with ability to change player names
+Local Tic Tac Toe game on JavaScript for two players with ability to change player names and symbols
 
 ## Screenshots
 
