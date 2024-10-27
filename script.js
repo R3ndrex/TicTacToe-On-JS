@@ -10,9 +10,11 @@ class Player {
             if (this.symbol === winnerSymbol) events.emit("Winner", this.#name);
         });
     }
+
     play(cellIndex) {
         this.#gameboard.setBoard(cellIndex, this.symbol);
     }
+
     get symbol() {
         return this.#symbol;
     }
@@ -88,13 +90,15 @@ class ScreenController {
         this.gameboard = gameboard;
         this.board = document.querySelector(".board");
         this.#formSubmitHandler(this.form);
-
-        events.on("Winner", (playerName) => {
+        this.#GameResultHandler(events);
+    }
+    #GameResultHandler(eventHandler) {
+        eventHandler.on("Winner", (playerName) => {
             const p = document.querySelector("p");
             p.textContent = `${playerName} has Won!`;
         });
 
-        events.on("Tie", () => {
+        eventHandler.on("Tie", () => {
             const p = document.querySelector("p");
             p.textContent = `Its a Tie!`;
         });
@@ -171,6 +175,7 @@ class ScreenController {
         this.gameController.setPlayers(name1, name2, symbol1, symbol2);
     }
 }
+
 const gameboard = new Gameboard();
 const gamecontroller = new GameController(
     new Player("First Player", "x", gameboard),
